@@ -28,6 +28,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation"
+import useSWR from 'swr'
+
+const fetcher = (url: string) => fetch(url, { credentials: "include" }).then(res => {
+  if (!res.ok) throw new Error("Failed to fetch data");
+  return res.json();
+});
 
 export function NavUser({
   user,
@@ -38,7 +45,30 @@ export function NavUser({
     avatar: string
   }
 }) {
+  const {data, isLoading, error} = useSWR('/api/profile', fetcher);
+  console.log('profile',data)
   const { isMobile } = useSidebar()
+  const router = useRouter();
+  const handleLogout = async()=>{
+    try {
+      const res = await fetch('/api/logout',
+        {
+          method:"POST",
+          credentials:"include"
+
+        });
+      const data = await res.json();
+      if(res.ok){
+        router.push('/login'); 
+      }
+    } catch (error) {
+      console.error("Error logging you out",error);
+      
+    }
+  }
+
+  if(isLoading) return <div>loading...</div>
+  if(error) return <div>error loading profile...</div>
 
   return (
     <SidebarMenu>
@@ -54,9 +84,9 @@ export function NavUser({
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{data.firstName}</span>
                 <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
+                  {data.email}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -75,9 +105,9 @@ export function NavUser({
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">{data.firstName}</span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
+                    {data.email}
                   </span>
                 </div>
               </div>
@@ -102,7 +132,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

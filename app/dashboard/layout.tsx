@@ -7,12 +7,19 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { Suspense } from "react"
 
 import data from "./data.json"
 
 export default function Layout({children}:Readonly<{
     children: React.ReactNode;
   }>) {
+  // const getProfile = async ()=>{
+  //   const res = await fetch('/api/profile',{credentials:"include"});
+  //   const data = await res.json();
+  //   return data
+  // }
+  // const profile = getProfile();
   return (
     <SidebarProvider
       style={
@@ -22,7 +29,10 @@ export default function Layout({children}:Readonly<{
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" />
+      
+      <AppSidebar variant="inset"  />
+    
+      
       <SidebarInset>
         <SiteHeader />
         {children}

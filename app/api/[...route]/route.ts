@@ -65,7 +65,9 @@ app.post('/users', async (c) => {
             }
         });
 
-        return c.json({ message: 'User Registered Successfully', user });
+        const {password:_, ...userWithoutPassword} = user;
+
+        return c.json({ message: 'User Registered Successfully', user: userWithoutPassword });
 
     } catch (error) {
         console.error("Error creating user:", error);
@@ -102,6 +104,17 @@ app.post('/login', async (c)=>{
     const { password: _, ...safeUser } = user;
 
     return c.json({message: 'User logged in successfully', user: safeUser});
+})
+
+app.post('/logout',async (c)=>{
+    c.header("Set-Cookie", cookie.serialize('authToken', '', {
+        httpOnly: true, //prevent access from javascript
+        secure: process.env.NODE_ENV === 'production', //use secure cookies in production
+        sameSite: 'strict',
+        expires: new Date(0), //expires the cookie immediately
+        path: '/',
+    }));
+    return c.json({message: 'User logged out successfully'});
 })
 
 
