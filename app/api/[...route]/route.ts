@@ -117,10 +117,36 @@ app.post('/logout',async (c)=>{
     return c.json({message: 'User logged out successfully'});
 })
 
+// documents controllers
 app.get('/documents', async(c)=>{
     const documents = await prisma.documents.findMany();
     return c.json(documents);
 })
+
+app.post('/documents', async (c)=>{
+    const body = await c.req.json();
+    const document = await prisma.documents.create({data: body});
+    return c.json(document);
+})
+
+app.put('/documents/:id', async (c)=>{
+    const {id} = c.req.param();
+    const body = await c.req.json();
+    const document = await prisma.documents.update({
+        where: {id: Number(id)},
+        data: body,
+    });
+    return c.json({message:"Successfully updated", document});
+})
+
+app.delete('/documents/:id', async (c)=>{
+    const {id} = c.req.param();
+    const document = await prisma.documents.delete({
+        where: {id: Number(id)},
+    });
+    return c.json({message:"Successfully deleted"});
+})
+
 
 
 
@@ -160,4 +186,6 @@ app.get('/profile',authMiddleware,async(c:any)=>{
 
 export const GET = handle(app);
 export const POST = handle(app);
+export const PUT  =handle(app);
+export const DELETE = handle(app);
 
