@@ -4,9 +4,11 @@ import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
 
 
-import data from "./data.json"
+// import data from "./data.json"
 
-export default function Page() {
+export default async function Page() {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
+  const data =  await fetch(`${API_BASE_URL}/documents`).then(res => res.json())
   return (
     
       

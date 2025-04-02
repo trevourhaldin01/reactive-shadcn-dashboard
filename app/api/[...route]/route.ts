@@ -117,6 +117,11 @@ app.post('/logout',async (c)=>{
     return c.json({message: 'User logged out successfully'});
 })
 
+app.get('/documents', async(c)=>{
+    const documents = await prisma.documents.findMany();
+    return c.json(documents);
+})
+
 
 
  const authMiddleware = async (c: Context, next: Next) => {
