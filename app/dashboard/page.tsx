@@ -8,7 +8,19 @@ import { SectionCards } from "@/components/section-cards"
 
 export default async function Page() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api";
-  const data =  await fetch(`${API_BASE_URL}/documents`).then(res => res.json())
+  let data = []
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/documents`)
+
+    if (!res.ok) {
+      throw new Error('Failed to fetch data')
+    }
+
+    data = await res.json()
+  } catch (error) {
+    console.error("Error fetching documents:", error)
+  }
   return (
     
       

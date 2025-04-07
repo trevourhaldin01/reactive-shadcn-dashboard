@@ -1,7 +1,7 @@
 import { Hono, Context, Next } from 'hono';
-import {PrismaClient} from '@prisma/client';
+
 import {handle} from 'hono/vercel';
-import { Bowlby_One_SC } from 'next/font/google';
+
 import prisma from '../../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
