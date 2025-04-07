@@ -5,8 +5,7 @@ import {handle} from 'hono/vercel';
 import prisma from '../../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import cookie from 'cookie';
-import {parse} from 'cookie';
+import {parse, serialize} from 'cookie';
 import {verify} from 'jsonwebtoken';
 
 export const dynamic = 'force-dynamic';
@@ -92,7 +91,7 @@ app.post('/login', async (c)=>{
     // generate JWT
     const token = jwt.sign({userId: user.id}, JWT_SECRET, {expiresIn: '1d'});
 
-    c.header("Set-Cookie", cookie.serialize('authToken', token, {
+    c.header("Set-Cookie", serialize('authToken', token, {
         httpOnly: true, //prevent access from javascript
         secure: process.env.NODE_ENV === 'production', //use secure cookies in production
         sameSite: 'strict',
@@ -107,7 +106,7 @@ app.post('/login', async (c)=>{
 })
 
 app.post('/logout',async (c)=>{
-    c.header("Set-Cookie", cookie.serialize('authToken', '', {
+    c.header("Set-Cookie",serialize('authToken', '', {
         httpOnly: true, //prevent access from javascript
         secure: process.env.NODE_ENV === 'production', //use secure cookies in production
         sameSite: 'strict',
